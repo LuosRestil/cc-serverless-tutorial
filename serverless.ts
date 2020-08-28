@@ -20,12 +20,22 @@ const serverlessConfiguration: Serverless = {
     name: 'aws',
     runtime: 'nodejs12.x',
     profile: 'bms_serverless',
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: [
+          'translate:*',
+        ],
+        Resource: '*'
+      }
+    ],
     apiGateway: {
       minimumCompressionSize: 1024,
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
+    
   },
   functions: {
     hello: {
@@ -44,8 +54,20 @@ const serverlessConfiguration: Serverless = {
       events: [
         {
           http: {
-            method: 'get',
+            method: 'GET',
             path: 'get-city/{city}',
+            cors: true,
+          }
+        }
+      ]
+    },
+    translate: {
+      handler: 'lambdas/translate.handler',
+      events: [
+        {
+          http: {
+            method: 'POST',
+            path: 'translate',
             cors: true,
           }
         }
